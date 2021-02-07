@@ -5,7 +5,7 @@ class RatingBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(4, (index){
+      children: List.generate(4, (index) {
         return Icon(
           Icons.star,
           color: Colors.white,

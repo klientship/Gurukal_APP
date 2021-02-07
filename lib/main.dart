@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:gurukal_app/pages/login.dart';
 import 'pages/Track_shipment.dart';
 import 'pages/Invoices.dart';
 import 'pages/Quotes.dart';
 import 'pages/UserInfo.dart';
 
-void main(){
+void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp
-      (
-      home: MyBottomNavigationBar(),
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => LoginPage(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/dashboard': (context) => MyBottomNavigationBar(),
+      },
     );
   }
 }
@@ -31,16 +37,15 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
     TrackPage(),
     UserPage(),
   ];
-  void onTappedBar(int index)
-  {
+  void onTappedBar(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTappedBar,
@@ -49,11 +54,12 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         backgroundColor: Colors.orangeAccent,
         items: [
           BottomNavigationBarItem(
-
-            icon: Icon(Icons.request_quote_outlined), title: Text("Invoices"),
+            icon: Icon(Icons.request_quote_outlined),
+            title: Text("Invoices"),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.analytics), title: Text("Quotes"),
+            icon: Icon(Icons.analytics),
+            title: Text("Quotes"),
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.local_shipping), title: Text("Track Shipment")),
