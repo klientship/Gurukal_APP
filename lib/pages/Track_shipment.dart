@@ -129,6 +129,6 @@ class _TrackPageState extends State<TrackPage> {
 }
 
 void track() async{
-  var response1 = await Dio().get('https://crm.gurukal.in/api/shipments/GLBNG0275/shipment_track');
+  var response1 = await Dio().get('https://crm.gurukal.in/api/customers/1');
   print(response1.data);
 }
