@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/dashboard': (context) => MyBottomNavigationBar(),
       },
+      // home: MyBottomNavigationBar()
     );
   }
 }
@@ -56,6 +57,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.request_quote_outlined),
+            // ignore: deprecated_member_use
             title: Text("Invoices"),
           ),
           BottomNavigationBarItem(

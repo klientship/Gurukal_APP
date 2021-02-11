@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Stack(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+                    padding: EdgeInsets.fromLTRB(90.0, 110.0, 0.0, 0.0),
                     child: Text('Login',
                         style: TextStyle(
                             fontSize: 80.0, fontWeight: FontWeight.bold)),
@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-void getLogin() async{
+void getLogin() async {
   var response = await Dio().get('https://crm.gurukal.in/api/customers/28');
   print(response.data);
 }
