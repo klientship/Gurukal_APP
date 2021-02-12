@@ -5,7 +5,6 @@ import 'pages/Invoices.dart';
 import 'pages/Quotes.dart';
 import 'pages/UserInfo.dart';
 
-
 void main() {
   runApp(MyApp());
 }

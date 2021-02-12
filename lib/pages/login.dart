@@ -9,6 +9,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _secureText = true;
+
   @override
   Widget build(BuildContext context) {
     getLogin();
@@ -47,27 +49,49 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.only(top: 25.0, left: 20.0, right: 20.0),
                 child: Column(
                   children: <Widget>[
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
-                          labelText: 'EMAIL',
-                          labelStyle: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.email)),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return 'Email is Required';
+                        }
+                        if (!RegExp(
+                                r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
+                            .hasMatch(value)) {
+                          return 'Please Enter valid email address';
+                        }
+                        return null;
+                      },
+
+                      // obscureText: true,
                     ),
                     SizedBox(height: 20.0),
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
-                          labelText: 'PASSWORD',
-                          labelStyle: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                      obscureText: true,
+                          labelText: 'Password',
+                          border: OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(_secureText
+                                ? Icons.remove_red_eye
+                                : Icons.security),
+                            onPressed: () {
+                              setState(() {
+                                _secureText = !_secureText;
+                              });
+                            },
+                          )),
+                      keyboardType: TextInputType.visiblePassword,
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return 'Password is Required';
+                        }
+                        return null;
+                      },
+                      obscureText: _secureText,
                     ),
                     SizedBox(height: 5.0),
                     Container(
