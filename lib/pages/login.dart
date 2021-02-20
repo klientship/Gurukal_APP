@@ -1,5 +1,7 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import '../controller/login_controller.dart';
+import 'package:gurukal_app/models/UserModel.dart';
+
 // import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -7,7 +9,28 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
+Future<UserModel> loginUser(String email, String password) async {
+  final String apiUrl = "https://crm.gurukal.in/api/login";
+
+  final response =
+      await http.post(apiUrl, body: {"email": email, "password": password});
+
+  // check statuscode
+  if (response.statusCode == 201) {
+    final String responseString = response.body;
+
+    return userModelFromJson(responseString);
+  } else {
+    return null;
+  }
+}
+
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
+
 class _LoginPageState extends State<LoginPage> {
+  UserModel _user;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -46,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: <Widget>[
                     TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                           labelText: 'EMAIL',
                           labelStyle: TextStyle(
@@ -57,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 20.0),
                     TextField(
+                      controller: passwordController,
                       decoration: InputDecoration(
                           labelText: 'PASSWORD',
                           labelStyle: TextStyle(
@@ -91,7 +116,16 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.green,
                         elevation: 7.0,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            final String email = emailController.text;
+                            final String password = passwordController.text;
+
+                            final UserModel user =
+                                await loginUser(email, password);
+
+                            setState(() {
+                              _user = user;
+                            });
                             Navigator.pushNamed(context, '/dashboard');
                           },
                           child: Center(

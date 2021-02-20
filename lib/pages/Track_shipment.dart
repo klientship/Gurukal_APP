@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 
 class TrackPage extends StatefulWidget {
   @override
@@ -33,7 +32,6 @@ class _TrackPageState extends State<TrackPage> {
 
   @override
   Widget build(BuildContext context) {
-    track();
     return Scaffold(
       appBar: AppBar(
         title: Text("Track Shipment"),
@@ -127,9 +125,4 @@ class _TrackPageState extends State<TrackPage> {
       ),
     );
   }
-}
-
-void track() async {
-  var response1 = await Dio().get('https://crm.gurukal.in/api/customers/1');
-  print(response1.data);
 }
