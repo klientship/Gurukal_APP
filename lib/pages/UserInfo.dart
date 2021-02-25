@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
-import 'common_widget.dart';
 class UserPage extends StatefulWidget {
   @override
   _UserPageState createState() => _UserPageState();
@@ -22,7 +20,7 @@ class _UserPageState extends State<UserPage> {
         padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget> [
+          children: <Widget>[
             Center(
               child: CircleAvatar(
                 backgroundImage: AssetImage('assets/team.png'),
@@ -126,6 +124,3 @@ class _UserPageState extends State<UserPage> {
     );
   }
 }
-
-
-
