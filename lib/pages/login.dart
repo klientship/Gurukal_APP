@@ -30,7 +30,6 @@ final TextEditingController passwordController = TextEditingController();
 
 class _LoginPageState extends State<LoginPage> {
   UserModel _user;
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
