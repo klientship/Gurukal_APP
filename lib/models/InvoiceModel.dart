@@ -1,15 +1,32 @@
 // To parse this JSON data, do
 //
-//     final userModel = userModelFromJson(jsonString);
+//     final invoiceModel = invoiceModelFromJson(jsonString);
 
 import 'dart:convert';
 
-UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
+InvoiceModel invoiceModelFromJson(String str) =>
+    InvoiceModel.fromJson(json.decode(str));
 
-String userModelToJson(UserModel data) => json.encode(data.toJson());
+String invoiceModelToJson(InvoiceModel data) => json.encode(data.toJson());
 
-class UserModel {
-  UserModel({
+class InvoiceModel {
+  InvoiceModel({
+    this.data,
+  });
+
+  Data data;
+
+  factory InvoiceModel.fromJson(Map<String, dynamic> json) => InvoiceModel(
+        data: Data.fromJson(json["data"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "data": data.toJson(),
+      };
+}
+
+class Data {
+  Data({
     this.advancePaid,
     this.paidInvoice,
     this.outstandingInvoice,
@@ -23,7 +40,7 @@ class UserModel {
   int totalInvoice;
   List<Shipment> shipment;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
         advancePaid: json["advance_paid"],
         paidInvoice: json["paid_invoice"],
         outstandingInvoice: json["outstanding_invoice"],
