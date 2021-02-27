@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 Future<InvoiceModel> getInvoices() async {
-  final String apiUrl = "https://crm.gurukal.in/api/customers/3/invoices";
+  final String apiUrl = "https://crm.gurukal.in/api/customers/5/invoices";
 
   final response = await http.get(apiUrl);
 
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           future: getInvoices(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             print(snapshot.data);
-            if (snapshot.data.data == null) {
+            if (snapshot.data == null) {
               return Container(child: Center(child: Text("Loading...")));
             } else {
               return ListView.builder(
@@ -42,13 +42,15 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://png.pngtree.com/png-vector/20191011/ourmid/pngtree-invoice-icon-png-image_1817550.jpg"),
-                      ),
+                          backgroundImage: AssetImage('assets/invoice.png')),
                       title: Text(snapshot
                           .data.data.shipment[index].freightInvoiceNumber),
                       subtitle:
-                          Text(snapshot.data.data.shipment[index].docketNo),
+                          snapshot.data.data.shipment[index].deliveryAddress !=
+                                  null
+                              ? Text(snapshot
+                                  .data.data.shipment[index].deliveryAddress)
+                              : Text("NO INFO"),
                       trailing: double.parse(snapshot
                                   .data.data.shipment[index].chargeBalance) >
                               0
