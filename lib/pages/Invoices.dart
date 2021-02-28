@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:gurukal_app/common/contants.dart';
 import 'package:gurukal_app/models/InvoiceModel.dart';
+import 'package:gurukal_app/models/UserModel.dart';
 import 'package:http/http.dart' as http;
 
 // import 'package:navigation/pages/common_widget.dart';
@@ -26,8 +27,12 @@ Future<InvoiceModel> getInvoices() async {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserModel user;
   @override
   Widget build(BuildContext context) {
+    // receive user data from login
+    user = ModalRoute.of(context).settings.arguments;
+    print(user);
     return Scaffold(
         body: Center(
       child: FutureBuilder(
