@@ -11,8 +11,9 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-Future<InvoiceModel> getInvoices() async {
-  final String apiUrl = "https://crm.gurukal.in/api/customers/5/invoices";
+Future<InvoiceModel> getInvoices(user_id) async {
+  final String apiUrl =
+      "https://crm.gurukal.in/api/customers/${user_id}/invoices";
 
   final response = await http.get(apiUrl);
 
@@ -27,59 +28,63 @@ Future<InvoiceModel> getInvoices() async {
 }
 
 class _HomePageState extends State<HomePage> {
-  UserModel user;
   @override
   Widget build(BuildContext context) {
+    // Read value
+
     // receive user data from login
-    user = ModalRoute.of(context).settings.arguments;
-    print(user);
+    final UserModel user = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
         body: Center(
       child: FutureBuilder(
-          future: getInvoices(),
+          future: getInvoices(user.user.id),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print(snapshot.data);
             if (snapshot.data == null) {
               return Container(child: Center(child: Text("Loading...")));
             } else {
-              return ListView.builder(
-                itemCount: snapshot.data.data.shipment.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                      leading: CircleAvatar(
-                          backgroundImage: AssetImage('assets/invoice.png')),
-                      title: Text(snapshot
-                          .data.data.shipment[index].freightInvoiceNumber),
-                      subtitle:
-                          snapshot.data.data.shipment[index].deliveryAddress !=
-                                  null
-                              ? Text(snapshot
-                                  .data.data.shipment[index].deliveryAddress)
-                              : Text("NO INFO"),
-                      trailing: double.parse(snapshot
-                                  .data.data.shipment[index].chargeBalance) >
-                              0
-                          ? Chip(
-                              padding: EdgeInsets.all(0),
-                              backgroundColor: Colors.redAccent,
-                              label: Text('UNPAID',
-                                  style: TextStyle(color: Colors.white)),
-                            )
-                          : Chip(
-                              padding: EdgeInsets.all(0),
-                              backgroundColor: Colors.greenAccent,
-                              label: Text('PAID',
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     new MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             DetailPage(snapshot.data[index])));
-                      });
-                },
-              );
+              if (snapshot.data.data.shipment.length == 0) {
+                return Container(child: Center(child: Text("Not found")));
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.data.shipment.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                        leading: CircleAvatar(
+                            backgroundImage: AssetImage('assets/invoice.png')),
+                        title: Text(snapshot
+                            .data.data.shipment[index].freightInvoiceNumber),
+                        subtitle: snapshot.data.data.shipment[index]
+                                    .deliveryAddress !=
+                                null
+                            ? Text(snapshot
+                                .data.data.shipment[index].deliveryAddress)
+                            : Text("NO INFO"),
+                        trailing: double.parse(snapshot
+                                    .data.data.shipment[index].chargeBalance) >
+                                0
+                            ? Chip(
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: Colors.redAccent,
+                                label: Text('UNPAID',
+                                    style: TextStyle(color: Colors.white)),
+                              )
+                            : Chip(
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: Colors.greenAccent,
+                                label: Text('PAID',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     new MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             DetailPage(snapshot.data[index])));
+                        });
+                  },
+                );
+              }
             }
           }),
     ));

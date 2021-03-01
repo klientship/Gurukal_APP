@@ -1,127 +1,143 @@
 import 'package:flutter/material.dart';
 
+import 'package:gurukal_app/models/TrackShipmentModel.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+
 class TrackPage extends StatefulWidget {
   @override
   _TrackPageState createState() => _TrackPageState();
 }
 
-class _TrackPageState extends State<TrackPage> {
-  String _SenderInfo;
+final TextEditingController docketNoController = TextEditingController();
+double iconSize = 40;
+bool isFetched = false;
 
-  double iconSize = 40;
+class _TrackPageState extends State<TrackPage> {
+  TrackShipmentModel shipmentDetails;
+  Future<TrackShipmentModel> trackShipment(String docket_no) async {
+    final String apiUrl =
+        'https://crm.gurukal.in/api/shipments/${docket_no}/shipment_track';
+
+    final response = await http.get(apiUrl);
+
+    // check statuscode
+    if (response.statusCode == 200) {
+      final String responseString = response.body;
+      isFetched = true;
+      return trackShipmentModelFromJson(responseString);
+    } else {
+      isFetched = false;
+      return null;
+    }
+  }
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  Widget _buildCustomerEmail() {
-    return TextFormField(
-      decoration: InputDecoration(
-          labelText: 'Tracking Number', border: OutlineInputBorder()),
-      // maxLength: 10,
-      // maxLines: 3,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Required';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _SenderInfo = value;
-      },
-    );
-  }
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    Widget getStatus(status) {
+      switch (status) {
+        case 'Awaiting pickup':
+          return Chip(
+            padding: EdgeInsets.all(0),
+            backgroundColor: Colors.grey,
+            label:
+                Text('Awaiting pickup', style: TextStyle(color: Colors.white)),
+          );
+          break;
+
+        case 'Delivered':
+          return Chip(
+            padding: EdgeInsets.all(0),
+            backgroundColor: Colors.green,
+            label: Text('Delivered', style: TextStyle(color: Colors.white)),
+          );
+          break;
+        default:
+          return Chip(
+            padding: EdgeInsets.all(0),
+            backgroundColor: Colors.blue,
+            label: Text('Intransit', style: TextStyle(color: Colors.white)),
+          );
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Track Shipment"),
-        backgroundColor: Colors.orangeAccent,
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(24),
-          child: Form(
-            key: _formkey,
+            margin: EdgeInsets.all(24),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Text("Tracking Number",style: TextStyle(fontSize: 20)),
-                SizedBox(height: 8),
-                _buildCustomerEmail(),
-                SizedBox(height: 16),
-                Container(
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RaisedButton(
-                        child: Text(
-                          'Track',
-                          style: TextStyle(color: Colors.blue, fontSize: 16),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
+                        child: Center(
+                          child: Text(
+                            "Track Shipment",
+                            style: new TextStyle(
+                              fontSize: 20.0,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        onPressed: () {
-                          if (!_formkey.currentState.validate()) {
-                            return;
+                      ),
+                      TextFormField(
+                        controller: docketNoController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter Docket no',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter docket no';
                           }
-                          _formkey.currentState.save();
-                          print(_SenderInfo);
+                          return null;
                         },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            // Validate will return true if the form is valid, or false if
+                            // the form is invalid.
+                            if (_formKey.currentState.validate()) {
+                              // Process data.
+                              final String docketNo = docketNoController.text;
+                              var data = await trackShipment(docketNo);
+                              setState(() {
+                                shipmentDetails = data;
+                              });
+                            }
+                          },
+                          child: Text('Track'),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    child: Table(
-                      border: TableBorder.all(),
-                      // columnWidths: {
-                      //   1: FlexColumnWidth(1.5),
-                      //   2: FlexColumnWidth(.3),
-                      // },
-                      children: [
-                        TableRow(children: [
-                          Column(children: [
-                            Text(
-                              'Date',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ]),
-                          Column(children: [
-                            Text('Status',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18)),
-                          ]),
-                          Column(children: [
-                            Text('Location',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18)),
-                          ]),
-                        ]),
-                        TableRow(children: [
-                          Column(children: [
-                            Center(
-                              child: Text(' '),
-                            ),
-                          ]),
-                          Column(children: [
-                            Text(' '),
-                          ]),
-                          Column(children: [
-                            Text(' '),
-                          ]),
-                        ]),
-                      ],
-                    ),
-                  ),
-                ),
+                isFetched
+                    ? ListView.builder(
+                        itemCount: shipmentDetails.track.length,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(DateFormat('dd-MM-yyyy – kk:mm').format(
+                                shipmentDetails.track[index].createdAt)),
+                            trailing:
+                                getStatus(shipmentDetails.track[index].status),
+                          );
+                        },
+                      )
+                    : Container()
               ],
-            ),
-          ),
-        ),
+            )),
       ),
     );
   }

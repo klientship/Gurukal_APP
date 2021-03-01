@@ -11,7 +11,7 @@ class QuotePage extends StatefulWidget {
 
 class _QuotePageState extends State<QuotePage> {
   Future<QuoteModel> getQuotes() async {
-    final String apiUrl = "https://crm.gurukal.in/api/customers/14/quotes";
+    final String apiUrl = "https://crm.gurukal.in/api/customers/1/quotes";
 
     final response = await http.get(apiUrl);
 
@@ -35,38 +35,43 @@ class _QuotePageState extends State<QuotePage> {
             if (snapshot.data == null) {
               return Container(child: Center(child: Text("Loading...")));
             } else {
-              return ListView.builder(
-                itemCount: snapshot.data.quote.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                      leading: CircleAvatar(
-                          backgroundImage: AssetImage('assets/invoice.png')),
-                      title: Text(snapshot.data.quote[index].quotationNo),
-                      subtitle: snapshot.data.quote[index].to != null
-                          ? Text(snapshot.data.quote[index].to)
-                          : Text("NO INFO"),
-                      trailing: snapshot.data.quote[index].status == 'declined'
-                          ? Chip(
-                              padding: EdgeInsets.all(0),
-                              backgroundColor: Colors.redAccent,
-                              label: Text('DECLINED',
-                                  style: TextStyle(color: Colors.white)),
-                            )
-                          : Chip(
-                              padding: EdgeInsets.all(0),
-                              backgroundColor: Colors.greenAccent,
-                              label: Text('APPROVED',
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     new MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             DetailPage(snapshot.data[index])));
-                      });
-                },
-              );
+              if (snapshot.data.quote.length == 0) {
+                return Container(child: Center(child: Text("Not found")));
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.quote.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                        leading: CircleAvatar(
+                            backgroundImage: AssetImage('assets/invoice.png')),
+                        title: Text(snapshot.data.quote[index].quotationNo),
+                        subtitle: snapshot.data.quote[index].to != null
+                            ? Text(snapshot.data.quote[index].to)
+                            : Text("NO INFO"),
+                        trailing:
+                            snapshot.data.quote[index].status == 'declined'
+                                ? Chip(
+                                    padding: EdgeInsets.all(0),
+                                    backgroundColor: Colors.redAccent,
+                                    label: Text('DECLINED',
+                                        style: TextStyle(color: Colors.white)),
+                                  )
+                                : Chip(
+                                    padding: EdgeInsets.all(0),
+                                    backgroundColor: Colors.greenAccent,
+                                    label: Text('APPROVED',
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     new MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             DetailPage(snapshot.data[index])));
+                        });
+                  },
+                );
+              }
             }
           }),
     );

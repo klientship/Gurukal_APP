@@ -9,6 +9,9 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
+bool isLogin = false;
+bool isError = false;
+
 Future<UserModel> loginUser(String email, String password) async {
   final String apiUrl = "https://crm.gurukal.in/api/login";
 
@@ -18,9 +21,12 @@ Future<UserModel> loginUser(String email, String password) async {
   // check statuscode
   if (response.statusCode == 201) {
     final String responseString = response.body;
-
+    isLogin = true;
+    isError = false;
     return userModelFromJson(responseString);
   } else {
+    isLogin = false;
+    isError = true;
     return null;
   }
 }
@@ -67,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
                 child: Column(
                   children: <Widget>[
+                    isError ? Text("Invalid email or password") : Container(),
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -114,8 +121,8 @@ class _LoginPageState extends State<LoginPage> {
                         shadowColor: Colors.greenAccent,
                         color: Colors.green,
                         elevation: 7.0,
-                        child: GestureDetector(
-                          onTap: () async {
+                        child: FlatButton(
+                          onPressed: () async {
                             final String email = emailController.text;
                             final String password = passwordController.text;
 
@@ -125,7 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               _user = user;
                             });
-                            Navigator.pushNamed(context, '/dashboard');
+                            if (isLogin) {
+                              Navigator.pushNamed(context, '/dashboard',
+                                  arguments: _user);
+                            }
                           },
                           child: Center(
                             child: Text(
@@ -143,29 +153,6 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 )),
             SizedBox(height: 15.0),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[
-            //     Text(
-            //       'New to Spotify ?',
-            //       style: TextStyle(fontFamily: 'Montserrat'),
-            //     ),
-            //     SizedBox(width: 5.0),
-            //     InkWell(
-            //       onTap: () {
-            //         Navigator.of(context).pushNamed('/signup');
-            //       },
-            //       child: Text(
-            //         'Register',
-            //         style: TextStyle(
-            //             color: Colors.green,
-            //             fontFamily: 'Montserrat',
-            //             fontWeight: FontWeight.bold,
-            //             decoration: TextDecoration.underline),
-            //       ),
-            //     )
-            //   ],
-            // )
           ],
         ));
   }

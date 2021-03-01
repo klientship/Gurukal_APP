@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:gurukal_app/pages/Quotes.dart';
 import 'package:gurukal_app/pages/login.dart';
-import 'pages/Track_shipment.dart';
+import 'pages/track_shipment.dart';
 import 'pages/Invoices.dart';
-import 'pages/Quotes.dart';
 import 'pages/UserInfo.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/dashboard',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => LoginPage(),
@@ -52,7 +53,9 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         onTap: onTappedBar,
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Colors.blueAccent[400],
+        unselectedItemColor: Colors.white70,
+        selectedItemColor: Colors.white,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.request_quote_outlined),
@@ -64,9 +67,13 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
             title: Text("Quotes"),
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.local_shipping), title: Text("Track Shipment")),
+            icon: Icon(Icons.local_shipping),
+            title: Text("Track"),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle), title: Text("User")),
+            icon: Icon(Icons.account_circle),
+            title: Text("User"),
+          ),
         ],
       ),
     );
