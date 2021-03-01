@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gurukal_app/models/UserModel.dart';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 
@@ -10,8 +11,9 @@ class QuotePage extends StatefulWidget {
 }
 
 class _QuotePageState extends State<QuotePage> {
-  Future<QuoteModel> getQuotes() async {
-    final String apiUrl = "https://crm.gurukal.in/api/customers/1/quotes";
+  Future<QuoteModel> getQuotes(user_id) async {
+    final String apiUrl =
+        "https://crm.gurukal.in/api/customers/${user_id}/quotes";
 
     final response = await http.get(apiUrl);
 
@@ -27,11 +29,13 @@ class _QuotePageState extends State<QuotePage> {
 
   @override
   Widget build(BuildContext context) {
+    // get user details
+    final UserModel user = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       body: FutureBuilder(
-          future: getQuotes(),
+          future: getQuotes(user.user.id),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print(snapshot.data);
             if (snapshot.data == null) {
               return Container(child: Center(child: Text("Loading...")));
             } else {

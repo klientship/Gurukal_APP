@@ -1,6 +1,5 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:gurukal_app/common/contants.dart';
+
 import 'package:gurukal_app/models/InvoiceModel.dart';
 import 'package:gurukal_app/models/UserModel.dart';
 import 'package:http/http.dart' as http;
