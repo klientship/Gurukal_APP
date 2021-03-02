@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:gurukal_app/pages/Quotes.dart';
+import 'package:gurukal_app/pages/invoice_view.dart';
 import 'package:gurukal_app/pages/login.dart';
 import 'pages/track_shipment.dart';
 import 'pages/Invoices.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginPage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/dashboard': (context) => MyBottomNavigationBar(),
+        '/invoice_view': (context) => InvoiceView()
       },
       // home: MyBottomNavigationBar()
     );
@@ -34,7 +36,7 @@ class MyBottomNavigationBar extends StatefulWidget {
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    HomePage(),
+    InvoicePage(),
     QuotePage(),
     TrackPage(),
     UserPage(),

@@ -5,14 +5,13 @@ import 'package:gurukal_app/models/UserModel.dart';
 import 'package:http/http.dart' as http;
 
 // import 'package:navigation/pages/common_widget.dart';
-class HomePage extends StatefulWidget {
+class InvoicePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _InvoicePageState createState() => _InvoicePageState();
 }
 
 Future<InvoiceModel> getInvoices(user_id) async {
-  final String apiUrl =
-      "https://crm.gurukal.in/api/customers/${user_id}/invoices";
+  final String apiUrl = "https://crm.gurukal.in/api/customers/4/invoices";
 
   final response = await http.get(apiUrl);
 
@@ -26,7 +25,7 @@ Future<InvoiceModel> getInvoices(user_id) async {
   }
 }
 
-class _HomePageState extends State<HomePage> {
+class _InvoicePageState extends State<InvoicePage> {
   @override
   Widget build(BuildContext context) {
     // Read value
@@ -78,8 +77,12 @@ class _HomePageState extends State<HomePage> {
                           // Navigator.push(
                           //     context,
                           //     new MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             DetailPage(snapshot.data[index])));
+                          //         builder: (context) => InvoicePage()));
+                          Navigator.pushNamed(context, '/invoice_view',
+                              arguments: {
+                                "invoice_id":
+                                    snapshot.data.data.shipment[index].id,
+                              });
                         });
                   },
                 );
