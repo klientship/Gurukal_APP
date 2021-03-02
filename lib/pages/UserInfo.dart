@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:gurukal_app/models/UserModel.dart';
+
+import 'package:intl/intl.dart';
+
 class UserPage extends StatefulWidget {
   @override
   _UserPageState createState() => _UserPageState();
@@ -8,26 +12,34 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
+    final UserModel user = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       backgroundColor: Colors.white70,
-      appBar: AppBar(
-        title: Text('User Information'),
-        centerTitle: true,
-        backgroundColor: Colors.orangeAccent,
-        elevation: 0.0,
-      ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
+        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
               child: CircleAvatar(
                 backgroundImage: AssetImage('assets/team.png'),
-                radius: 80.0,
+                radius: 70.0,
               ),
             ),
             SizedBox(height: 10.0),
+            Center(
+              child: Text(
+                user.user.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ),
+            SizedBox(height: 5.0),
             Center(
               child: Chip(
                 padding: EdgeInsets.all(0),
@@ -49,7 +61,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 SizedBox(width: 10.0),
                 Text(
-                  'test@gurukal.in',
+                  user.user.email,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.0,
@@ -68,7 +80,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 SizedBox(width: 10.0),
                 Text(
-                  '09148850331',
+                  user.user.phone,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.0,
@@ -86,34 +98,31 @@ class _UserPageState extends State<UserPage> {
                   size: 28.0,
                 ),
                 SizedBox(width: 10.0),
-                Text(
-                  'Divya Enclave, Ground \nFloor, near canara college',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.0,
-                    letterSpacing: 1.0,
+                Flexible(
+                  child: Text(
+                    user.user.address,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.0,
+                      letterSpacing: 1.0,
+                    ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 30),
             Row(
               children: [
-                Text(
-                  ' Registration Date : ',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.0,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                SizedBox(width: 10.0),
-                Text(
-                  '2020-07-06',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.0,
-                    letterSpacing: 1.0,
+                Flexible(
+                  child: Center(
+                    child: Text(
+                      'Registration Date : ${DateFormat('dd-MM-yyyy').format(user.user.createdAt)} ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
                   ),
                 ),
               ],

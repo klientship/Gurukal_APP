@@ -1,172 +1,94 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
+
+import 'package:gurukal_app/models/InvoiceModel.dart';
+import 'package:gurukal_app/models/UserModel.dart';
+import 'package:http/http.dart' as http;
 
 // import 'package:navigation/pages/common_widget.dart';
-class HomePage extends StatefulWidget {
+class InvoicePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _InvoicePageState createState() => _InvoicePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final double _borderRadius = 24;
+Future<InvoiceModel> getInvoices(user_id) async {
+  final String apiUrl = "https://crm.gurukal.in/api/customers/4/invoices";
 
-  var items = [
-    PlaceInfo('OUTSTANDING INVOICES', Color(0xff6DC8F3), Color(0xff73A1F9),'₹ 0',
-    'assets/download.png'),
-    PlaceInfo('PAID INVOICES', Color(0xff42E695), Color(0xff3BB2BB), '₹ 0',
-        'assets/download.png'),
-    PlaceInfo('TOTAL INVOICES', Color(0xffFF5B95), Color(0xffF85560), '0',
-        'assets/invoices.png'),
-    // PlaceInfo('TOTAL QUOTATIONS', Color(0xffD76EF5), Color(0xff8F7AFE), '24',
-    //     'assets/quotation.png'),
-    // PlaceInfo('TOTAL CUSTOMERS', Color(0xff42E695), Color(0xff3BB2BB), '173',
-    //     'assets/customer.png'),
-    // PlaceInfo('PENDING PAYMENT', Color(0xff6DC8F3), Color(0xff73A1F9), '1425734',
-    //     'assets/payment.png'),
-    // PlaceInfo('UPCOMING EXPENSES', Color(0xffFF5B95), Color(0xffF85560), '77000',
-    //     'assets/expenses.png'),
+  final response = await http.get(apiUrl);
 
-  ];
+  // check statuscode
+  if (response.statusCode == 200) {
+    final String responseString = response.body;
 
+    return invoiceModelFromJson(responseString);
+  } else {
+    return null;
+  }
+}
 
+class _InvoicePageState extends State<InvoicePage> {
   @override
   Widget build(BuildContext context) {
+    // Read value
+
+    // receive user data from login
+    final UserModel user = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-            child: Text("GURUKAL LOGISTICS"),
-        ),
-        backgroundColor: Colors.orangeAccent,
-      ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Stack(
-                children: <Widget> [
-                  Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(_borderRadius),
-                      gradient: LinearGradient(
-                        colors: [  items[index].startColor,  items[index].endColor ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color:  items[index].endColor,
-                          blurRadius: 12,
-                          offset: Offset(0,6),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    top: 0 ,
-                    child: CustomPaint(
-                      size: Size(100,150),
-                      painter: CustomCardShapePainter(_borderRadius, items[index].startColor,  items[index].endColor),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Row(
-                      children: <Widget> [
-                        Expanded(
-                          child: Image.asset(items[index].image,
-                            height:64,
-                            width: 64,
-                          ),
-                          flex: 2,
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget> [
-                              SizedBox(height: 16),
-                              Text(
-                                items[index].name,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Avenir',
-                                    fontWeight: FontWeight.w500
-                                ),
+        body: Center(
+      child: FutureBuilder(
+          future: getInvoices(user.user.id),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.data == null) {
+              return Container(child: Center(child: Text("Loading...")));
+            } else {
+              if (snapshot.data.data.shipment.length == 0) {
+                return Container(child: Center(child: Text("Not found")));
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.data.shipment.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                        leading: CircleAvatar(
+                            backgroundImage: AssetImage('assets/invoice.png')),
+                        title: Text(snapshot
+                            .data.data.shipment[index].freightInvoiceNumber),
+                        subtitle: snapshot.data.data.shipment[index]
+                                    .deliveryAddress !=
+                                null
+                            ? Text(snapshot
+                                .data.data.shipment[index].deliveryAddress)
+                            : Text("NO INFO"),
+                        trailing: double.parse(snapshot
+                                    .data.data.shipment[index].chargeBalance) >
+                                0
+                            ? Chip(
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: Colors.redAccent,
+                                label: Text('UNPAID',
+                                    style: TextStyle(color: Colors.white)),
+                              )
+                            : Chip(
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: Colors.greenAccent,
+                                label: Text('PAID',
+                                    style: TextStyle(color: Colors.white)),
                               ),
-                              SizedBox(height: 16),
-                              Text(
-                                items[index].value,
-                                style: TextStyle(color: Colors.white,
-                                    fontFamily: 'Avenir',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     new MaterialPageRoute(
+                          //         builder: (context) => InvoicePage()));
+                          Navigator.pushNamed(context, '/invoice_view',
+                              arguments: {
+                                "invoice_id":
+                                    snapshot.data.data.shipment[index].id,
+                              });
+                        });
+                  },
+                );
+              }
+            }
+          }),
+    ));
   }
 }
-
-class PlaceInfo {
-  final String name;
-  final Color startColor;
-  final Color endColor;
-  final String value;
-  final String image;
-
-  PlaceInfo(this.name, this.startColor, this.endColor, this.value, this.image);
-}
-
-class CustomCardShapePainter extends CustomPainter{
-  final double radius;
-  final Color startColor;
-  final Color endColor;
-  CustomCardShapePainter(this.radius,this.startColor,this.endColor);
-  @override
-  void paint(Canvas canvas, Size size) {
-    var radius = 24.0;
-    var paint = Paint();
-    paint.shader = ui. Gradient.linear(
-        Offset(0, 0),
-        Offset(size.width, size.height),[
-      HSLColor.fromColor(startColor).withLightness(0.8).toColor(),
-      endColor
-    ]);
-
-    var path = ui.Path()
-      ..moveTo(0,size.height)
-      ..lineTo(size.width - radius, size.height)
-      ..quadraticBezierTo(size.width, size.height, size.width, size.height - radius)
-      ..lineTo(size.width, radius)
-      ..quadraticBezierTo(size.width, 0, size.width - radius, 0)
-      ..lineTo(size.width - 1.5 * radius, 0)
-      ..quadraticBezierTo(-radius, 2 * radius, 0 , size.height)
-      ..close();
-    canvas.drawPath(path, paint);
-
-  }
-
-  @override
-  bool shouldRepaint(   CustomPainter oldDelegate) {
-    return true;
-  }
-
-}
-
-

@@ -1,6 +1,7 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import '../controller/login_controller.dart';
-import 'package:dio/dio.dart';
+import 'package:gurukal_app/models/UserModel.dart';
+
 // import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -8,12 +9,35 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool _secureText = true;
+bool isLogin = false;
+bool isError = false;
 
+Future<UserModel> loginUser(String email, String password) async {
+  final String apiUrl = "https://crm.gurukal.in/api/login";
+
+  final response =
+      await http.post(apiUrl, body: {"email": email, "password": password});
+
+  // check statuscode
+  if (response.statusCode == 201) {
+    final String responseString = response.body;
+    isLogin = true;
+    isError = false;
+    return userModelFromJson(responseString);
+  } else {
+    isLogin = false;
+    isError = true;
+    return null;
+  }
+}
+
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
+
+class _LoginPageState extends State<LoginPage> {
+  UserModel _user;
   @override
   Widget build(BuildContext context) {
-    getLogin();
     return new Scaffold(
         resizeToAvoidBottomPadding: false,
         body: Column(
@@ -23,75 +47,56 @@ class _LoginPageState extends State<LoginPage> {
               child: Stack(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.fromLTRB(90.0, 110.0, 0.0, 0.0),
-                    child: Text('Login',
+                    padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+                    child: Text('Hello',
                         style: TextStyle(
                             fontSize: 80.0, fontWeight: FontWeight.bold)),
                   ),
-                  // Container(
-                  //   padding: EdgeInsets.fromLTRB(16.0, 175.0, 0.0, 0.0),
-                  //   child: Text('There',
-                  //       style: TextStyle(
-                  //           fontSize: 80.0, fontWeight: FontWeight.bold)),
-                  // ),
-                  // Container(
-                  //   padding: EdgeInsets.fromLTRB(220.0, 175.0, 0.0, 0.0),
-                  //   child: Text('.',
-                  //       style: TextStyle(
-                  //           fontSize: 80.0,
-                  //           fontWeight: FontWeight.bold,
-                  //           color: Colors.green)),
-                  // ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(16.0, 175.0, 0.0, 0.0),
+                    child: Text('There',
+                        style: TextStyle(
+                            fontSize: 80.0, fontWeight: FontWeight.bold)),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(220.0, 175.0, 0.0, 0.0),
+                    child: Text('.',
+                        style: TextStyle(
+                            fontSize: 80.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green)),
+                  )
                 ],
               ),
             ),
             Container(
-                padding: EdgeInsets.only(top: 25.0, left: 20.0, right: 20.0),
+                padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
                 child: Column(
                   children: <Widget>[
-                    TextFormField(
+                    isError ? Text("Invalid email or password") : Container(),
+                    TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.email)),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return 'Email is Required';
-                        }
-                        if (!RegExp(
-                                r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
-                            .hasMatch(value)) {
-                          return 'Please Enter valid email address';
-                        }
-                        return null;
-                      },
-
-                      // obscureText: true,
+                          labelText: 'EMAIL',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green))),
                     ),
                     SizedBox(height: 20.0),
-                    TextFormField(
+                    TextField(
+                      controller: passwordController,
                       decoration: InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(_secureText
-                                ? Icons.remove_red_eye
-                                : Icons.security),
-                            onPressed: () {
-                              setState(() {
-                                _secureText = !_secureText;
-                              });
-                            },
-                          )),
-                      keyboardType: TextInputType.visiblePassword,
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return 'Password is Required';
-                        }
-                        return null;
-                      },
-                      obscureText: _secureText,
+                          labelText: 'PASSWORD',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green))),
+                      obscureText: true,
                     ),
                     SizedBox(height: 5.0),
                     Container(
@@ -116,9 +121,21 @@ class _LoginPageState extends State<LoginPage> {
                         shadowColor: Colors.greenAccent,
                         color: Colors.green,
                         elevation: 7.0,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/dashboard');
+                        child: FlatButton(
+                          onPressed: () async {
+                            final String email = emailController.text;
+                            final String password = passwordController.text;
+
+                            final UserModel user =
+                                await loginUser(email, password);
+
+                            setState(() {
+                              _user = user;
+                            });
+                            if (isLogin) {
+                              Navigator.pushNamed(context, '/dashboard',
+                                  arguments: _user);
+                            }
                           },
                           child: Center(
                             child: Text(
@@ -136,35 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 )),
             SizedBox(height: 15.0),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[
-            //     Text(
-            //       'New to Spotify ?',
-            //       style: TextStyle(fontFamily: 'Montserrat'),
-            //     ),
-            //     SizedBox(width: 5.0),
-            //     InkWell(
-            //       onTap: () {
-            //         Navigator.of(context).pushNamed('/signup');
-            //       },
-            //       child: Text(
-            //         'Register',
-            //         style: TextStyle(
-            //             color: Colors.green,
-            //             fontFamily: 'Montserrat',
-            //             fontWeight: FontWeight.bold,
-            //             decoration: TextDecoration.underline),
-            //       ),
-            //     )
-            //   ],
-            // )
           ],
-        )); 
+        ));
   }
-}
-
-void getLogin() async {
-  var response = await Dio().get('https://crm.gurukal.in/api/customers/28');
-  print(response.data);
 }
