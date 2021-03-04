@@ -12,7 +12,7 @@ class InvoiceView extends StatefulWidget {
 }
 
 Future<SingleInvoiceModel> getInvoice() async {
-  final String apiUrl = "https://crm.gurukal.in/api/shipments/200";
+  final String apiUrl = "https://crm.gurukal.in/api/shipments/298";
 
   final response = await http.get(apiUrl);
 
@@ -45,115 +45,218 @@ class _InvoiceViewState extends State<InvoiceView> {
               return SafeArea(
                 child: Container(
                   margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: Column(
-                    children: [
-                      Text(
-                        "FREIGHT INVOICE",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25.0,
-                          letterSpacing: 1.0,
+                  child: ListView(children: <Widget>[
+                    Column(
+                      children: [
+                        Text(
+                          "FREIGHT INVOICE",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25.0,
+                            letterSpacing: 1.0,
+                          ),
                         ),
-                      ),
-                      Card(
-                          color: Colors.blueAccent[400],
-                          shadowColor: Colors.black,
-                          elevation: 10,
+                        Card(
+                            color: Colors.blueAccent[400],
+                            shadowColor: Colors.black,
+                            elevation: 10,
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "INVOICE NO: ${snapshot.data.data.freightInvoiceNumber}",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15.0,
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                        Card(
+                            shadowColor: Colors.black,
+                            elevation: 5,
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Date: ${DateFormat('dd-MM-yyyy').format(snapshot.data.data.date)}",
+                                        style: TextStyle(
+                                          letterSpacing: 1.0,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 70,
+                                      ),
+                                      Text(
+                                        "Vehicle: ${snapshot.data.data.transportDriverVehicle}",
+                                        style: TextStyle(
+                                          letterSpacing: 1.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )),
+                        Card(
+                            shadowColor: Colors.black,
+                            elevation: 5,
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Transaction Type: ${snapshot.data.data.packageTransactionType}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          letterSpacing: 1.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )),
+                        snapshot.data.data.billTo == "consignor"
+                            ? CustomerCard(
+                                name: snapshot.data.data.sender.name,
+                                address: snapshot.data.data.sender.address,
+                                gst: snapshot.data.data.sender.gst,
+                                title: "BILL TO",
+                              )
+                            : CustomerCard(
+                                name: snapshot.data.data.receiver.name,
+                                address: snapshot.data.data.receiver.address,
+                                gst: snapshot.data.data.receiver.gst,
+                                title: "BILL TO",
+                              ),
+                        CustomerCard(
+                          name: snapshot.data.data.sender.name,
+                          address: snapshot.data.data.sender.address,
+                          gst: snapshot.data.data.sender.gst,
+                          title: "Sender",
+                        ),
+                        CustomerCard(
+                          name: snapshot.data.data.receiver.name,
+                          address: snapshot.data.data.receiver.address,
+                          gst: snapshot.data.data.receiver.gst,
+                          title: "Receiver",
+                        ),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.data.package.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              child: ListTile(
+                                  leading: Text("1"),
+                                  title: Text(snapshot
+                                      .data.data.package[index].description),
+                                  subtitle: Text(
+                                      "Serial No: ${snapshot.data.data.package[index].serialNo}\nDocket No: ${snapshot.data.data.docketNo}\nInvoice No: ${snapshot.data.data.package[index].invoiceNo}"),
+                                  trailing: Text(
+                                      "Quantity - ${snapshot.data.data.package[index].quantity}\nWeight - ${snapshot.data.data.package[index].weight}Kg")),
+                            );
+                          },
+                        ),
+                        Card(
                           child: Container(
                             width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "INVOICE NO: ${snapshot.data.data.freightInvoiceNumber}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    letterSpacing: 1.0,
+                            child: DataTable(
+                              columns: <DataColumn>[
+                                DataColumn(
+                                  label: Text(
+                                    'Charge Type',
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Text(
+                                    'Amount',
                                   ),
                                 ),
                               ],
-                            ),
-                          )),
-                      Card(
-                          shadowColor: Colors.black,
-                          elevation: 5,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Date: ${DateFormat('dd-MM-yyyy').format(snapshot.data.data.date)}",
-                                      style: TextStyle(
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 70,
-                                    ),
-                                    Text(
-                                      "Vehicle: ${snapshot.data.data.transportDriverVehicle}",
-                                      style: TextStyle(
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
+                              rows: <DataRow>[
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Transportation')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeTransportation}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Handling')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeHandling}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('ODC Charge')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeOdc}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Halting')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeHalting}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Insurance')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeInsurance}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('GST')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeTaxAmount}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Total')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeTotal}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Advance Paid')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeAdvancePaid}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Balance Amount')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeBalance}')),
                                   ],
                                 ),
                               ],
                             ),
-                          )),
-                      Card(
-                          shadowColor: Colors.black,
-                          elevation: 5,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Transaction Type: ${snapshot.data.data.packageTransactionType}",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )),
-                      snapshot.data.data.billTo == "consignor"
-                          ? CustomerCard(
-                              name: snapshot.data.data.sender.name,
-                              address: snapshot.data.data.sender.address,
-                              gst: snapshot.data.data.sender.gst,
-                              title: "BILL TO",
-                            )
-                          : CustomerCard(
-                              name: snapshot.data.data.receiver.name,
-                              address: snapshot.data.data.receiver.address,
-                              gst: snapshot.data.data.receiver.gst,
-                              title: "BILL TO",
-                            ),
-                      CustomerCard(
-                        name: snapshot.data.data.sender.name,
-                        address: snapshot.data.data.sender.address,
-                        gst: snapshot.data.data.sender.gst,
-                        title: "Sender",
-                      ),
-                      CustomerCard(
-                        name: snapshot.data.data.receiver.name,
-                        address: snapshot.data.data.receiver.address,
-                        gst: snapshot.data.data.receiver.gst,
-                        title: "Receiver",
-                      )
-                    ],
-                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]),
                 ),
               );
             }
