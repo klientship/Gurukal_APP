@@ -11,8 +11,8 @@ class InvoiceView extends StatefulWidget {
   _InvoiceViewState createState() => _InvoiceViewState();
 }
 
-Future<SingleInvoiceModel> getInvoice() async {
-  final String apiUrl = "https://crm.gurukal.in/api/shipments/298";
+Future<SingleInvoiceModel> getInvoice(invoice_id) async {
+  final String apiUrl = "https://crm.gurukal.in/api/shipments/${invoice_id}";
 
   final response = await http.get(apiUrl);
 
@@ -33,11 +33,11 @@ class _InvoiceViewState extends State<InvoiceView> {
 
     // receive user data from login
     Map data = ModalRoute.of(context).settings.arguments;
-    print(data);
+
     return Scaffold(
         body: Center(
       child: FutureBuilder(
-          future: getInvoice(),
+          future: getInvoice(data['invoice_id']),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return Container(child: Center(child: Text("Loading...")));
@@ -160,7 +160,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                           itemBuilder: (context, index) {
                             return Card(
                               child: ListTile(
-                                  leading: Text("1"),
+                                  leading: Text("${index + 1}"),
                                   title: Text(snapshot
                                       .data.data.package[index].description),
                                   subtitle: Text(

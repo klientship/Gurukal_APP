@@ -66,11 +66,10 @@ class _QuotePageState extends State<QuotePage> {
                                         style: TextStyle(color: Colors.white)),
                                   ),
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     new MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             DetailPage(snapshot.data[index])));
+                          Navigator.pushNamed(context, '/quote_view',
+                              arguments: {
+                                "quote_id": snapshot.data.quote[index].id,
+                              });
                         });
                   },
                 );
