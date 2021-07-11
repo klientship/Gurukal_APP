@@ -12,7 +12,8 @@ class QuotePage extends StatefulWidget {
 
 class _QuotePageState extends State<QuotePage> {
   Future<QuoteModel> getQuotes(user_id) async {
-    final String apiUrl = "https://crm.gurukal.in/api/customers/2/quotes";
+    final String apiUrl =
+        "https://crm.gurukal.in/api/customers/${user_id}/quotes";
 
     final response = await http.get(apiUrl);
 

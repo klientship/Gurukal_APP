@@ -11,7 +11,8 @@ class InvoicePage extends StatefulWidget {
 }
 
 Future<InvoiceModel> getInvoices(user_id) async {
-  final String apiUrl = "https://crm.gurukal.in/api/customers/4/invoices";
+  final String apiUrl =
+      "https://crm.gurukal.in/api/customers/${user_id}/invoices";
 
   final response = await http.get(apiUrl);
 

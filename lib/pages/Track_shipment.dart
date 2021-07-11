@@ -121,15 +121,20 @@ class _TrackPageState extends State<TrackPage> {
                     ],
                   ),
                 ),
-                isFetched
+                isFetched && shipmentDetails != null
                     ? ListView.builder(
                         itemCount: shipmentDetails.track.length,
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text(DateFormat('dd-MM-yyyy – kk:mm').format(
-                                shipmentDetails.track[index].createdAt)),
+                            title: shipmentDetails.track[index].location == null
+                                ? Text("NO INFO")
+                                : Text(
+                                    "${shipmentDetails.track[index].location}"),
+                            subtitle: Text(DateFormat('dd-MM-yyyy – kk:mm')
+                                .format(
+                                    shipmentDetails.track[index].createdAt)),
                             trailing:
                                 getStatus(shipmentDetails.track[index].status),
                           );

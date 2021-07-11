@@ -82,9 +82,15 @@ class _QuoteViewState extends State<QuoteView> {
                             child: Container(
                               width: double.infinity,
                               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: Column(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
+                                  Image.asset(
+                                    "assets/logo.png",
+                                    scale: 2,
+                                  ),
+                                  Column(
                                     children: [
                                       Text(
                                         "Date: ${DateFormat('dd-MM-yyyy').format(snapshot.data.createdAt)}",
@@ -92,6 +98,25 @@ class _QuoteViewState extends State<QuoteView> {
                                           letterSpacing: 1.0,
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      snapshot.data.status == 'declined'
+                                          ? Chip(
+                                              padding: EdgeInsets.all(0),
+                                              backgroundColor: Colors.redAccent,
+                                              label: Text('DECLINED',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            )
+                                          : Chip(
+                                              padding: EdgeInsets.all(0),
+                                              backgroundColor:
+                                                  Colors.greenAccent,
+                                              label: Text('APPROVED',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            ),
                                     ],
                                   ),
                                 ],

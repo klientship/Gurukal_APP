@@ -82,21 +82,18 @@ class _InvoiceViewState extends State<InvoiceView> {
                             child: Container(
                               width: double.infinity,
                               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: Column(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
+                                  Image.asset(
+                                    "assets/logo.png",
+                                    scale: 2,
+                                  ),
+                                  Column(
                                     children: [
                                       Text(
-                                        "Date: ${DateFormat('dd-MM-yyyy').format(snapshot.data.data.date)}",
-                                        style: TextStyle(
-                                          letterSpacing: 1.0,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 70,
-                                      ),
-                                      Text(
-                                        "Vehicle: ${snapshot.data.data.transportDriverVehicle}",
+                                        "Date: ${DateFormat('dd-MM-yyyy').format(snapshot.data.data.date)}\nVehicle: ${snapshot.data.data.transportDriverVehicle}",
                                         style: TextStyle(
                                           letterSpacing: 1.0,
                                         ),
