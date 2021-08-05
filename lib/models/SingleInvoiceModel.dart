@@ -38,6 +38,8 @@ class Data {
     this.chargeBalance,
     this.chargeHalting,
     this.chargeHandling,
+    this.chargeCartage,
+    this.chargeOverWeight,
     this.chargeOdc,
     this.chargeTaxAmount,
     this.chargeTaxPercent,
@@ -72,6 +74,7 @@ class Data {
     this.vendorAdvance,
     this.vendorCommission,
     this.vendorName,
+    this.vendorMemoNo,
     this.vendorBalance,
     this.tdsAmount,
     this.document,
@@ -87,6 +90,8 @@ class Data {
   String chargeBalance;
   String chargeHalting;
   String chargeHandling;
+  String chargeCartage;
+  String chargeOverWeight;
   String chargeOdc;
   String chargeTaxAmount;
   String chargeTaxPercent;
@@ -103,7 +108,7 @@ class Data {
   dynamic packageContactPerson;
   dynamic packagePickupAddress;
   String packageTransactionType;
-  List<dynamic> payment;
+  List<Payment> payment;
   dynamic paymentType;
   Receiver receiver;
   int receiverId;
@@ -113,14 +118,15 @@ class Data {
   dynamic transportCompanyName;
   dynamic transportCompanyPhone;
   dynamic transportDriverName;
-  dynamic transportDriverPhone;
-  dynamic transportDriverVehicle;
+  String transportDriverPhone;
+  String transportDriverVehicle;
   dynamic userNotes;
   int vendorId;
   int vendorTotal;
   int vendorAdvance;
   String vendorCommission;
   String vendorName;
+  dynamic vendorMemoNo;
   int vendorBalance;
   String tdsAmount;
   dynamic document;
@@ -136,6 +142,8 @@ class Data {
         chargeBalance: json["charge_balance"],
         chargeHalting: json["charge_halting"],
         chargeHandling: json["charge_handling"],
+        chargeCartage: json["charge_cartage"],
+        chargeOverWeight: json["charge_over_weight"],
         chargeOdc: json["charge_odc"],
         chargeTaxAmount: json["charge_tax_amount"],
         chargeTaxPercent: json["charge_tax_percent"],
@@ -153,7 +161,8 @@ class Data {
         packageContactPerson: json["package_contact_person"],
         packagePickupAddress: json["package_pickup_address"],
         packageTransactionType: json["package_transaction_type"],
-        payment: List<dynamic>.from(json["payment"].map((x) => x)),
+        payment:
+            List<Payment>.from(json["payment"].map((x) => Payment.fromJson(x))),
         paymentType: json["payment_type"],
         receiver: Receiver.fromJson(json["receiver"]),
         receiverId: json["receiver_id"],
@@ -171,6 +180,7 @@ class Data {
         vendorAdvance: json["vendor_advance"],
         vendorCommission: json["vendor_commission"],
         vendorName: json["vendor_name"],
+        vendorMemoNo: json["vendor_memo_no"],
         vendorBalance: json["vendor_balance"],
         tdsAmount: json["tds_amount"],
         document: json["document"],
@@ -187,6 +197,8 @@ class Data {
         "charge_balance": chargeBalance,
         "charge_halting": chargeHalting,
         "charge_handling": chargeHandling,
+        "charge_cartage": chargeCartage,
+        "charge_over_weight": chargeOverWeight,
         "charge_odc": chargeOdc,
         "charge_tax_amount": chargeTaxAmount,
         "charge_tax_percent": chargeTaxPercent,
@@ -204,7 +216,7 @@ class Data {
         "package_contact_person": packageContactPerson,
         "package_pickup_address": packagePickupAddress,
         "package_transaction_type": packageTransactionType,
-        "payment": List<dynamic>.from(payment.map((x) => x)),
+        "payment": List<dynamic>.from(payment.map((x) => x.toJson())),
         "payment_type": paymentType,
         "receiver": receiver.toJson(),
         "receiver_id": receiverId,
@@ -222,6 +234,7 @@ class Data {
         "vendor_advance": vendorAdvance,
         "vendor_commission": vendorCommission,
         "vendor_name": vendorName,
+        "vendor_memo_no": vendorMemoNo,
         "vendor_balance": vendorBalance,
         "tds_amount": tdsAmount,
         "document": document,
@@ -246,15 +259,15 @@ class Package {
 
   int id;
   String description;
-  dynamic serialNo;
-  dynamic invoiceNo;
+  String serialNo;
+  String invoiceNo;
   dynamic size;
-  dynamic weight;
+  String weight;
   String cost;
   int shipmentId;
   DateTime createdAt;
   DateTime updatedAt;
-  String quantity;
+  dynamic quantity;
 
   factory Package.fromJson(Map<String, dynamic> json) => Package(
         id: json["id"],
@@ -285,6 +298,63 @@ class Package {
       };
 }
 
+class Payment {
+  Payment({
+    this.id,
+    this.paymentType,
+    this.amount,
+    this.paymentDate,
+    this.bankName,
+    this.upiRefId,
+    this.chequeNo,
+    this.shipmentId,
+    this.customerId,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  int id;
+  String paymentType;
+  String amount;
+  DateTime paymentDate;
+  String bankName;
+  dynamic upiRefId;
+  dynamic chequeNo;
+  int shipmentId;
+  int customerId;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  factory Payment.fromJson(Map<String, dynamic> json) => Payment(
+        id: json["id"],
+        paymentType: json["payment_type"],
+        amount: json["amount"],
+        paymentDate: DateTime.parse(json["payment_date"]),
+        bankName: json["bank_name"],
+        upiRefId: json["upi_ref_id"],
+        chequeNo: json["cheque_no"],
+        shipmentId: json["shipment_id"],
+        customerId: json["customer_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "payment_type": paymentType,
+        "amount": amount,
+        "payment_date":
+            "${paymentDate.year.toString().padLeft(4, '0')}-${paymentDate.month.toString().padLeft(2, '0')}-${paymentDate.day.toString().padLeft(2, '0')}",
+        "bank_name": bankName,
+        "upi_ref_id": upiRefId,
+        "cheque_no": chequeNo,
+        "shipment_id": shipmentId,
+        "customer_id": customerId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
 class Receiver {
   Receiver({
     this.id,
@@ -311,7 +381,7 @@ class Receiver {
   String gst;
   String phone;
   String address;
-  String userNotes;
+  dynamic userNotes;
   int status;
   dynamic emailVerifiedAt;
   DateTime createdAt;
@@ -327,7 +397,7 @@ class Receiver {
         gst: json["gst"],
         phone: json["phone"],
         address: json["address"],
-        userNotes: json["user_notes"] == null ? null : json["user_notes"],
+        userNotes: json["user_notes"],
         status: json["status"],
         emailVerifiedAt: json["email_verified_at"],
         createdAt: DateTime.parse(json["created_at"]),
@@ -344,7 +414,7 @@ class Receiver {
         "gst": gst,
         "phone": phone,
         "address": address,
-        "user_notes": userNotes == null ? null : userNotes,
+        "user_notes": userNotes,
         "status": status,
         "email_verified_at": emailVerifiedAt,
         "created_at": createdAt.toIso8601String(),

@@ -18,6 +18,8 @@ class SingleQuoteModel {
     this.status,
     this.createdAt,
     this.updatedAt,
+    this.sent,
+    this.remarks,
     this.customer,
     this.list,
   });
@@ -28,6 +30,8 @@ class SingleQuoteModel {
   String status;
   DateTime createdAt;
   DateTime updatedAt;
+  int sent;
+  String remarks;
   Customer customer;
   List<ListElement> list;
 
@@ -39,6 +43,8 @@ class SingleQuoteModel {
         status: json["status"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        sent: json["sent"],
+        remarks: json["remarks"],
         customer: Customer.fromJson(json["customer"]),
         list: List<ListElement>.from(
             json["list"].map((x) => ListElement.fromJson(x))),
@@ -51,6 +57,8 @@ class SingleQuoteModel {
         "status": status,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+        "sent": sent,
+        "remarks": remarks,
         "customer": customer.toJson(),
         "list": List<dynamic>.from(list.map((x) => x.toJson())),
       };
@@ -144,11 +152,11 @@ class ListElement {
   String from;
   String to;
   String description;
-  dynamic size;
+  String size;
   String weight;
   String eta;
   String rate;
-  String advance;
+  dynamic advance;
   int quoteId;
   DateTime createdAt;
   DateTime updatedAt;

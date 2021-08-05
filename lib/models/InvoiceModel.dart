@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final invoiceModel = invoiceModelFromJson(jsonString);
-
 import 'dart:convert';
 
 InvoiceModel invoiceModelFromJson(String str) =>

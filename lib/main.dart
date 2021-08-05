@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
+import 'package:gurukal_app/models/TrackShipmentModel.dart';
 import 'package:gurukal_app/pages/Quotes.dart';
 import 'package:gurukal_app/pages/dashboard.dart';
 import 'package:gurukal_app/pages/invoice_view.dart';
@@ -24,7 +25,9 @@ class MyApp extends StatelessWidget {
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/dashboard': (context) => MyBottomNavigationBar(),
         '/invoice_view': (context) => InvoiceView(),
-        '/quote_view': (context) => QuoteView()
+        '/quote_view': (context) => QuoteView(),
+        '/invoices': (context) => InvoicePage(),
+        '/track': (context) => TrackPage(),
       },
       // home: MyBottomNavigationBar()
     );
@@ -44,7 +47,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
     DashboardPage(),
     InvoicePage(),
     QuotePage(),
-    TrackPage(),
+    // TrackPage(),
     UserPage(),
   ];
 
@@ -57,7 +60,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
             TabData(iconData: Icons.home, title: "Dashboard"),
             TabData(iconData: Icons.request_quote_outlined, title: "Invoices"),
             TabData(iconData: Icons.analytics, title: "Quotes"),
-            TabData(iconData: Icons.local_shipping, title: "Track"),
+            // TabData(iconData: Icons.local_shipping, title: "Track"),
             TabData(iconData: Icons.account_circle, title: "User")
           ],
           initialSelection: 0,

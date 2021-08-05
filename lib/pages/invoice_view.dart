@@ -200,6 +200,20 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 ),
                                 DataRow(
                                   cells: <DataCell>[
+                                    DataCell(Text('Cartage')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeCartage}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text('Over Weight')),
+                                    DataCell(Text(
+                                        '${snapshot.data.data.chargeOverWeight}')),
+                                  ],
+                                ),
+                                DataRow(
+                                  cells: <DataCell>[
                                     DataCell(Text('ODC Charge')),
                                     DataCell(Text(
                                         '${snapshot.data.data.chargeOdc}')),

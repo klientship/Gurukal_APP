@@ -151,6 +151,13 @@ class _QuoteViewState extends State<QuoteView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
+                                "Remarks",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                "${snapshot.data.remarks}",
+                              ),
+                              Text(
                                 "Terms & Conditions",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
