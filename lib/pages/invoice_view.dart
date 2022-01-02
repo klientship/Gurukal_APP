@@ -4,6 +4,8 @@ import 'package:gurukal_app/pages/widgets/customer_card.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:io';
 
 // import 'package:navigation/pages/common_widget.dart';
 class InvoiceView extends StatefulWidget {
@@ -12,7 +14,7 @@ class InvoiceView extends StatefulWidget {
 }
 
 Future<SingleInvoiceModel> getInvoice() async {
-  final String apiUrl = "https://crm.gurukal.in/api/shipments/200";
+  final String apiUrl = "https://crm.gurukal.in/api/shipments/400";
 
   final response = await http.get(apiUrl);
 
@@ -28,136 +30,31 @@ Future<SingleInvoiceModel> getInvoice() async {
 
 class _InvoiceViewState extends State<InvoiceView> {
   @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) {
+      WebView.platform = SurfaceAndroidWebView();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Read value
 
     // receive user data from login
     Map data = ModalRoute.of(context).settings.arguments;
-    print(data);
-    return Scaffold(
-        body: Center(
-      child: FutureBuilder(
-          future: getInvoice(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.data == null) {
-              return Container(child: Center(child: Text("Loading...")));
-            } else {
-              return SafeArea(
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: Column(
-                    children: [
-                      Text(
-                        "FREIGHT INVOICE",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25.0,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      Card(
-                          color: Colors.blueAccent[400],
-                          shadowColor: Colors.black,
-                          elevation: 10,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "INVOICE NO: ${snapshot.data.data.freightInvoiceNumber}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    letterSpacing: 1.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
-                      Card(
-                          shadowColor: Colors.black,
-                          elevation: 5,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Date: ${DateFormat('dd-MM-yyyy').format(snapshot.data.data.date)}",
-                                      style: TextStyle(
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 70,
-                                    ),
-                                    Text(
-                                      "Vehicle: ${snapshot.data.data.transportDriverVehicle}",
-                                      style: TextStyle(
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )),
-                      Card(
-                          shadowColor: Colors.black,
-                          elevation: 5,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Transaction Type: ${snapshot.data.data.packageTransactionType}",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )),
-                      snapshot.data.data.billTo == "consignor"
-                          ? CustomerCard(
-                              name: snapshot.data.data.sender.name,
-                              address: snapshot.data.data.sender.address,
-                              gst: snapshot.data.data.sender.gst,
-                              title: "BILL TO",
-                            )
-                          : CustomerCard(
-                              name: snapshot.data.data.receiver.name,
-                              address: snapshot.data.data.receiver.address,
-                              gst: snapshot.data.data.receiver.gst,
-                              title: "BILL TO",
-                            ),
-                      CustomerCard(
-                        name: snapshot.data.data.sender.name,
-                        address: snapshot.data.data.sender.address,
-                        gst: snapshot.data.data.sender.gst,
-                        title: "Sender",
-                      ),
-                      CustomerCard(
-                        name: snapshot.data.data.receiver.name,
-                        address: snapshot.data.data.receiver.address,
-                        gst: snapshot.data.data.receiver.gst,
-                        title: "Receiver",
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }
-          }),
-    ));
+    WebViewController _controller;
+    return WebView(
+      key: UniqueKey(),
+      zoomEnabled: false,
+      userAgent:
+          "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Mobile Safari/537.36",
+      javascriptMode: JavascriptMode.unrestricted,
+      initialUrl:
+          "https://crm.gurukal.in/customer/invoice/XSFQqLeeNrRTQjK95ea7mnkGbU74eLUEets272Lq2nnSXkEfLkYtAxtgfz2B/${data['invoice_id']}/y8NRkCN4X9pHh6RM327hZTRd9ErSgmWd4P6zB52mZJLT9rqry7pVU6tzf6L8/view",
+      onWebViewCreated: (WebViewController webViewController) {
+        _controller = webViewController;
+      },
+    );
   }
 }

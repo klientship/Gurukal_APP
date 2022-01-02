@@ -17,6 +17,8 @@ Future<UserModel> loginUser(String email, String password) async {
 
   final response =
       await http.post(apiUrl, body: {"email": email, "password": password});
+  // final response = await http.post(apiUrl,
+  //     body: {"email": "logistics@gurukal.in", "password": "Guru123kal#"});
 
   // check statuscode
   if (response.statusCode == 201) {
@@ -86,20 +88,20 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                 ),
                 SizedBox(height: 5.0),
-                Container(
-                  alignment: Alignment(1.0, 0.0),
-                  padding: EdgeInsets.only(top: 15.0, left: 20.0),
-                  child: InkWell(
-                    child: Text(
-                      'Forgot Password',
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Montserrat',
-                          decoration: TextDecoration.underline),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   alignment: Alignment(1.0, 0.0),
+                //   padding: EdgeInsets.only(top: 15.0, left: 20.0),
+                //   child: InkWell(
+                //     child: Text(
+                //       'Forgot Password',
+                //       style: TextStyle(
+                //           color: Colors.green,
+                //           fontWeight: FontWeight.bold,
+                //           fontFamily: 'Montserrat',
+                //           decoration: TextDecoration.underline),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: 40.0),
                 Container(
                   height: 40.0,
