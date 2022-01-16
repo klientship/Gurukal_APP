@@ -1,4 +1,4 @@
-package rakshith.gurukal_app;
+package in.gurukal.crm;
 
 import io.flutter.embedding.android.FlutterActivity;
 

@@ -52,8 +52,7 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                   padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
                   child: Image(
-                    image: NetworkImage(
-                        'https://i.ibb.co/WFdrW4M/Logo-Color-Text-Below.jpg'),
+                    image: AssetImage('assets/logo.png'),
                   )),
             ],
           ),
