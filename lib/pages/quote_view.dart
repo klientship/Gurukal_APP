@@ -8,27 +8,12 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io';
 
 // import 'package:navigation/pages/common_widget.dart';
-class InvoiceView extends StatefulWidget {
+class QuoteView extends StatefulWidget {
   @override
-  _InvoiceViewState createState() => _InvoiceViewState();
+  _QuoteViewState createState() => _QuoteViewState();
 }
 
-Future<SingleInvoiceModel> getInvoice() async {
-  final String apiUrl = "https://crm.gurukal.in/api/shipments/400";
-
-  final response = await http.get(apiUrl);
-
-  // check statuscode
-  if (response.statusCode == 200) {
-    final String responseString = response.body;
-
-    return singleInvoiceModelFromJson(responseString);
-  } else {
-    return null;
-  }
-}
-
-class _InvoiceViewState extends State<InvoiceView> {
+class _QuoteViewState extends State<QuoteView> {
   @override
   void initState() {
     super.initState();
@@ -56,7 +41,7 @@ class _InvoiceViewState extends State<InvoiceView> {
               "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Mobile Safari/537.36",
           javascriptMode: JavascriptMode.unrestricted,
           initialUrl:
-              "https://crm.gurukal.in/invoices/mobile/${data['invoice_id']}",
+              "https://crm.gurukal.in/quotes/mobile/${data['quote_id']}",
           onWebViewCreated: (WebViewController webViewController) {
             _controller = webViewController;
           },

@@ -79,14 +79,16 @@ class _UserPageState extends State<UserPage> {
                   size: 28.0,
                 ),
                 SizedBox(width: 10.0),
-                Text(
-                  user.user.phone,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.0,
-                    letterSpacing: 1.0,
-                  ),
-                ),
+                user.user.phone != null
+                    ? Text(
+                        user.user.phone,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          letterSpacing: 1.0,
+                        ),
+                      )
+                    : Container()
               ],
             ),
             SizedBox(height: 16),
@@ -98,16 +100,18 @@ class _UserPageState extends State<UserPage> {
                   size: 28.0,
                 ),
                 SizedBox(width: 10.0),
-                Flexible(
-                  child: Text(
-                    user.user.address,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ),
+                user.user.address != null
+                    ? Flexible(
+                        child: Text(
+                          user.user.address,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      )
+                    : Container()
               ],
             ),
             SizedBox(height: 30),

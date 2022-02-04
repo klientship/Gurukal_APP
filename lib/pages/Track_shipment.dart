@@ -66,6 +66,11 @@ class _TrackPageState extends State<TrackPage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Track Shipment'),
+        backgroundColor: Colors.blueAccent[400],
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Container(
             margin: EdgeInsets.all(24),
@@ -76,18 +81,6 @@ class _TrackPageState extends State<TrackPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
-                        child: Center(
-                          child: Text(
-                            "Track Shipment",
-                            style: new TextStyle(
-                              fontSize: 20.0,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
                       TextFormField(
                         controller: docketNoController,
                         decoration: const InputDecoration(
@@ -101,23 +94,29 @@ class _TrackPageState extends State<TrackPage> {
                         },
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // Validate will return true if the form is valid, or false if
-                            // the form is invalid.
-                            if (_formKey.currentState.validate()) {
-                              // Process data.
-                              final String docketNo = docketNoController.text;
-                              var data = await trackShipment(docketNo);
-                              setState(() {
-                                shipmentDetails = data;
-                              });
-                            }
-                          },
-                          child: Text('Track'),
-                        ),
-                      ),
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blueAccent[400],
+
+                              padding: EdgeInsets.all(8.0),
+                              minimumSize: Size.fromHeight(
+                                  40), // fromHeight use double.infinity as width and 40 is the height
+                            ),
+                            onPressed: () async {
+                              // Validate will return true if the form is valid, or false if
+                              // the form is invalid.
+                              if (_formKey.currentState.validate()) {
+                                // Process data.
+                                final String docketNo = docketNoController.text;
+                                var data = await trackShipment(docketNo);
+                                setState(() {
+                                  shipmentDetails = data;
+                                });
+                              }
+                            },
+                            child: Text('Track'),
+                          )),
                     ],
                   ),
                 ),

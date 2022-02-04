@@ -12,9 +12,9 @@ class QuotePage extends StatefulWidget {
 
 class _QuotePageState extends State<QuotePage> {
   Future<QuoteModel> getQuotes(user_id) async {
-    final String apiUrl =
-        "https://crm.gurukal.in/api/customers/${user_id}/quotes";
-    // final String apiUrl = "https://crm.gurukal.in/api/customers/2/quotes";
+    // final String apiUrl =
+    // "https://crm.gurukal.in/api/customers/${user_id}/quotes";
+    final String apiUrl = "https://crm.gurukal.in/api/customers/4/quotes";
 
     final response = await http.get(apiUrl);
 
@@ -34,6 +34,11 @@ class _QuotePageState extends State<QuotePage> {
     final UserModel user = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Quotes'),
+        backgroundColor: Colors.blueAccent[400],
+        automaticallyImplyLeading: false,
+      ),
       body: FutureBuilder(
           future: getQuotes(user.user.id),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -68,6 +73,11 @@ class _QuotePageState extends State<QuotePage> {
                                         style: TextStyle(color: Colors.white)),
                                   ),
                         onTap: () {
+                          Navigator.pushNamed(context, '/quote_view',
+                              arguments: {
+                                "quote_id": snapshot.data.quote[index].id,
+                              });
+
                           // Navigator.push(
                           //     context,
                           //     new MaterialPageRoute(
